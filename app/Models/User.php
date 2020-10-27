@@ -20,6 +20,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'firstname',
+        'lastname'
     ];
 
     /**
@@ -40,4 +42,13 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    function exists() {
+        $user = User::where('email', $this->email)->get();
+        if (count($user) === 0) {
+            return false;
+        }
+        return true;
+    }
+
 }
