@@ -34,4 +34,22 @@ class Handler extends ExceptionHandler
     {
         //
     }
+
+    /*public function render ($request, Exception $exception) {
+        return 'mbola';
+        /*
+        if ($exception instanceof MethodNotAllowedHttpEception) {
+            return response()->json([
+                'message' => 'An error occured while processing request',
+                'status' => false],
+                500
+            );
+        };
+
+        return response()->json([
+            'message' => 'Page Not Found',
+            'status' => false],
+            404
+        );
+    }*/
 }

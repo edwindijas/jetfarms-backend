@@ -13,6 +13,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
+Route::get('/server-status', function () {
     return "Server up and running";
+});
+
+
+Route::fallback(function () {
+    return response()->json(
+        ['message' => 'Page Not Found. If the error persist, contact info@jetfarmsng.com'], 404
+    );
 });
