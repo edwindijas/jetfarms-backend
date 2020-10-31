@@ -7,6 +7,8 @@ use App\Http\Controllers\Investments;
 use App\Http\Controllers\Users;
 use App\Http\Controllers\Packages;
 use App\Http\Controllers\Images;
+use App\Http\Controllers\Home;
+use App\Http\Controllers\Contact;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -28,6 +30,7 @@ Route::post('/user/signup', [Users::class, 'signup']);
 Route::post('/user/signin', [Users::class, 'signin']);
 
 Route::get('/packages/getall', [Packages::class, 'getAll']);
+Route::get('/packages/getById/{id}', [Packages::class, 'getById']);
 
 Route::post('/packages/add', [Packages::class, 'add']);
 Route::post('/packages/save', [Packages::class, 'save']);
@@ -36,6 +39,8 @@ Route::get('/investments/save', [Investments::class, 'getAll']);
 
 Route::post('/images/upload', [Images::class, 'upload']);
 Route::get('/images/get', [Images::class, 'get']);
+
+Route::get('/home/get-data', [Home::class, 'getData']);
 
 
 Route::fallback(function () {

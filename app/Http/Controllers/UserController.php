@@ -53,18 +53,23 @@ class Users extends Controller
         $data = json_decode($request->getContent(), true);
         $users = User::where('email', $data['email'])->get();
         //If Users count is 0: User does not exists
-        if (count($users) === 0) {
-            return ["error" => ["message" => "User not found"]];
-        }
-
-        $user = $users[0];
-        //User aunthenticated
-        if (password_verify($data['password'], $user->password)) {
-            return ["status" => "true"];
+        if (count($users) === 0 || !password_verify($data['password'], $users[0]->password) ) {
+            return response()->json([
+                'userMessage' => 'Failed to login, invalid email or password',
+                'status' => false,
+                'errors' => [
+                    
+                ]
+                ], 401);
         }
 
         //Password authentication failed
-        return ["error" => ["message" => "Invallid Password"]];
+        return response()->json([
+            'user' => [
+                'title' => 'User details coming soon',
+            ],
+            'status' => true
+        ], 200);
     }
 
 }

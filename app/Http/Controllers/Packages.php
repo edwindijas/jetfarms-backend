@@ -45,7 +45,7 @@ class Packages extends Controller
 
     private function checkRequiredKeys(Array &$errors, Array &$data) {
         //if ()
-        $required = ['crop', 'price', 'units', 'state', 'openingDate', 'closingDate', 'closingDate'];
+        $required = ['crop', 'price', 'units', 'rate', 'label', 'state', 'openingDate', 'closingDate', 'closingDate'];
         //Check if content of the data is okay;
         //Push the errors to the error message
         foreach ($required as $key) {
@@ -63,19 +63,24 @@ class Packages extends Controller
         //Check required keys
         $this->checkRequiredKeys($errors, $data);
 
+        
         //Early Exists
-        if (array_keys($errors) > 0) {
+        if (count(array_keys($errors)) > 0) {
             return $errors;
         }
 
+
+
         //Validate Crop name
-        if ()
+        //if ()
 
         
         $crop = $this->getCrop($data['crop']);
         $investment->crop = $crop->id;
         $investment->price = $data['price'];
         $investment->units = $data['units'];
+        $investment->rate = $data['rate'];
+        $investment->label = $data['label'];
 
         if (array_key_exists('description', $data)) {
             $investment->description = $data['description'];
@@ -84,16 +89,78 @@ class Packages extends Controller
         $investment->state = $data['state'];
         $investment->opening_date = $data['openingDate'];
         $investment->closing_date = $data['closingDate'];
+
+        return $errors;
     }
 
-    function add (Request $request) { 
+    function add (Request $request) {
+        
         $package = new Package();
-        $this->packageFill($package, $request);
+        $errors = $this->packageFill($package, $request);
+
+        if (count(array_keys($errors)) > 0) {
+            return response()->json(
+                [
+                    'userMessage' => 'failed to complete task, check form and try again.',
+                    'errors' => $errors
+                ], 400
+             );
+        }
         $package->save();
-        return json_encode($package);
+        return response()->json(['package' => $package->crop]);
+    }
+
+
+    private function getCropsInPackages (&$packages, $multiple = true) {
+        $cropsIds = [];
+        foreach($packages as $package) {
+            if (in_array($package->crop, $cropsIds)) {
+                continue;
+            }
+            array_push($cropsIds, $package->crop);
+        }
+
+        $crops = Crop::whereIn('id', $cropsIds)->get();
+        $cropsSorted = [];
+        //Create a  hash map
+        foreach ($crops as $crop) {
+            $cropsSorted[$crop->id] = $crop;
+        }
+
+        return $cropsSorted;
+    }
+
+    private function addCropToPackage (&$packages, &$cropsHashed) {
+        foreach ($packages as $key => $package) {
+            $packages[$key]->crop = $cropsHashed[$package->crop];
+        }
+    }
+
+    private function addCropInfoToPackages (&$packages) {
+       $cropsHashed = $this->getCropsInPackages($packages);
+       $this->addCropToPackage($packages, $cropsHashed);
+    }
+
+    function getNew () {
+        $data = Package::all();
+        $this->addCropInfoToPackages($data);
+        return $data;
     }
 
     function getAll () {
-        return Package::all();
+        $data = Package::all();
+        $this->addCropInfoToPackages($data);
+        return response()->json($data);
+    }
+
+    function getById($id) {
+        $item = Package::where('id', $id)->first();
+        if ($item) {
+            $item->crop = Crop::where('id', $item->crop)->first();
+            return response()->json(
+                ['item' => $item, 'state' => true]
+            );
+        }
+        return response()->json( ["message" => 'Item not found'], 404);
     }
 }

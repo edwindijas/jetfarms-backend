@@ -18,6 +18,8 @@ class Package extends Model
         'closing_date',
         'state_message',
         'state',
-        'preorder'
+        'preorder',
+        'label',
+        'rate'
     ];
 }

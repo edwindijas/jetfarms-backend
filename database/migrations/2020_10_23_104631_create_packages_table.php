@@ -19,6 +19,8 @@ class CreatePackagesTable extends Migration
             $table->integer('crop')->references('crops', 'id');
             $table->integer('price')->comment("Price in multiples of 100");
             $table->integer('units')->comment("Units available");
+            $table->string('label')->nullable();
+            $table->string('rate')->nullable();
             $table->text('description')->comment("product descriptions");
             $table->timestamp('opening_date');
             $table->timestamp('closing_date');
