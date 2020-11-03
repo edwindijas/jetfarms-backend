@@ -18,11 +18,14 @@ class CreateUsersTable extends Migration
             $table->string('firstname');
             $table->string('middlename')->nullable();
             $table->string('lastname');
-            $table->boolean('exipres')->default(false);
+            $table->boolean('expires')->default(false);
             $table->boolean('expired')->default(true);
             $table->string('email')->unique();
+            $table->string('verification_token')->nullable();
+            $table->string('verification_token_timestamp')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->enum('role', ['admin', 'moderator', 'support', 'user'])->default('user');
             $table->rememberToken();
             $table->timestamps();
         });

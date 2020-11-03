@@ -25,9 +25,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-
+Route::get('/user/get', [Users::class, 'getUser']);
 Route::post('/user/signup', [Users::class, 'signup']);
 Route::post('/user/signin', [Users::class, 'signin']);
+Route::get('/user/signout', [Users::class, 'signout']);
+Route::get('/user/recovery/info', [Users::class, 'recoveryInfo']);
+Route::post('/user/recovery/verify', [Users::class, 'recoveryVerify']);
 
 Route::get('/packages/getall', [Packages::class, 'getAll']);
 Route::get('/packages/getById/{id}', [Packages::class, 'getById']);
