@@ -37,6 +37,8 @@ class User extends Authenticatable
         'verification_token',
         'verification_token_timestamp',
         'remember_token',
+        'created_at',
+        'updated_at'
     ];
 
     /**
