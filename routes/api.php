@@ -32,6 +32,8 @@ Route::get('/user/signout', [Users::class, 'signout']);
 Route::get('/user/recovery/info', [Users::class, 'recoveryInfo']);
 Route::post('/user/recovery/verify', [Users::class, 'recoveryVerify']);
 
+Route::post('/user/settings/changePassword', [Users::class, 'changePassword']);
+
 Route::get('/packages/getall', [Packages::class, 'getAll']);
 Route::get('/packages/getById/{id}', [Packages::class, 'getById']);
 

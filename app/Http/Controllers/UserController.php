@@ -171,4 +171,54 @@ class Users extends Controller
         return $token;
     }
 
+
+    function changePassword (Request $request) {
+        $user = Auth::user();
+        $data = json_decode($request->getContent(), true);
+        $oldPassword = $data['oldPassword'];
+        $newPassword = $data['password'];
+        $confirmPassword = $data['confirm'];
+
+        if ($newPassword !== $confirmPassword) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to change password',
+                'errors' => [
+                    'confirm' => 'Couldn\' confirm password'
+                ]
+                ], 403);
+        }
+
+        if (!password_verify($oldPassword, $user->password)) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to change password',
+                'errors' => [
+                    'oldPassword' => ['message' =>'Password is incorrect']
+                ]
+            ], 403);
+        }
+
+        if ($newPassword === $oldPassword) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Failed to change password',
+                'errors' => [
+                    'password' => ['message' => 'Cannot use old password as a new password']
+                ]
+                ], 403);
+        }
+
+
+        $user->password = password_hash($newPassword, PASSWORD_DEFAULT);
+
+
+        $user->save();
+
+        return response()->json([
+            'status' => true
+        ]);
+
+    }
+
 }
