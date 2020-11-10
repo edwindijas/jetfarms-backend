@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Package;
 use App\Models\Crop;
+use App\Models\CropImage;
 
 class Packages extends Controller
 {
@@ -106,10 +107,27 @@ class Packages extends Controller
                 ], 400
              );
         }
+        $this->saveCropImages($package, $request);
         $package->save();
         return response()->json(['package' => $package->crop]);
     }
 
+    private function saveCropImages (Package &$package, Request &$request) {
+        $data = json_decode($request->getContent(), true);
+        $images = json_decode($data['images']);
+        if (!$images) {
+            return;
+        }
+        foreach($images as $image) {
+            $cropImage = new CropImage();
+            $cropImage->image_uuid = $image;
+            $cropImage->crop_id = $package->crop;
+            $cropImage->save();
+        }
+
+        return true;
+
+    }
 
     private function getCropsInPackages (&$packages, $multiple = true) {
         $cropsIds = [];
