@@ -110,7 +110,6 @@ class Users extends Controller
 
     function recoveryInfo() {
         $user = Auth::user();
-
         if ($user === null) {
             return $user;
         }

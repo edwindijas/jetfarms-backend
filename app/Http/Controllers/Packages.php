@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Package;
 use App\Models\Crop;
 use App\Models\CropImage;
+use App\Models\Image;
 
 class Packages extends Controller
 {
@@ -129,6 +130,8 @@ class Packages extends Controller
 
     }
 
+
+
     private function getCropsInPackages (&$packages, $multiple = true) {
         $cropsIds = [];
         foreach($packages as $package) {
@@ -139,11 +142,24 @@ class Packages extends Controller
         }
 
         $crops = Crop::whereIn('id', $cropsIds)->get();
+        $cropsImages = CropImage::whereIn('crop_id', $cropsIds)->get();
         $cropsSorted = [];
+
+        $cropsImagesHashed = [];
+        foreach($cropsImages as $cropsImage) {
+            $cropsImage->url = asset("/storage/images/$cropsImage->image_uuid");
+            $cropsImagesHashed[$cropsImage->crop_id][] = $cropsImage;
+        }
+
         //Create a  hash map
         foreach ($crops as $crop) {
+            $crop->images = array_key_exists($crop->id, $cropsImagesHashed)
+                ? $cropsImagesHashed[$crop->id]
+                : [];
+
             $cropsSorted[$crop->id] = $crop;
         }
+        
 
         return $cropsSorted;
     }
