@@ -7,6 +7,7 @@ use App\Models\Package;
 use App\Models\Crop;
 use App\Models\CropImage;
 use App\Models\Image;
+use Illuminate\Support\Str;
 
 class Packages extends Controller
 {
@@ -72,17 +73,14 @@ class Packages extends Controller
         }
 
 
-
-        //Validate Crop name
-        //if ()
-
-        
         $crop = $this->getCrop($data['crop']);
         $investment->crop = $crop->id;
         $investment->price = $data['price'];
         $investment->units = $data['units'];
         $investment->rate = $data['rate'];
         $investment->label = $data['label'];
+
+        $investment->uuid = (String) Str::orderedUuid();
 
         if (array_key_exists('description', $data)) {
             $investment->description = $data['description'];
