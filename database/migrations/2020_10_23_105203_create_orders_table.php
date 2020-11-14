@@ -17,7 +17,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->integer('user_id');
             $table->string('uuid');
-            $table->enum('state', ['pending', 'completed'])->default(0);
+            $table->enum('state', ['pending', 'completed', 'unknown'])->default('pending');
             $table->string('paymentMethod')->nullable();
             $table->string('payload');
             $table->timestamps();
