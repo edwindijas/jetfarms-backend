@@ -9,6 +9,7 @@ use App\Http\Controllers\Packages;
 use App\Http\Controllers\Images;
 use App\Http\Controllers\Home;
 use App\Http\Controllers\Contact;
+use App\Http\Controllers\CartController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -46,6 +47,9 @@ Route::post('/images/upload', [Images::class, 'upload']);
 Route::get('/images/get', [Images::class, 'get']);
 
 Route::get('/home/get-data', [Home::class, 'getData']);
+
+Route::post('/cart/place-items', [CartController::class, 'placeOrder']);
+Route::get('/cart/get-items/{cartUuid}', [CartController::class, 'getItemsFromCart']);
 
 
 Route::fallback(function () {
