@@ -22,6 +22,21 @@ trait ModelTraits {
         return $uuid;
     }
 
+    static function getUniqueColumnValues ($column, &$collection) {
+        $values = [];
+
+        foreach ($collection as $row) {
+            if (in_array($row[$column], $values)) {
+                continue;
+            }
+
+            $values[] = $row[$column];
+
+        }
+
+        return $values;
+    }
+
 }
 
 

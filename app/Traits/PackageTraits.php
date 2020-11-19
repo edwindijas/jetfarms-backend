@@ -6,7 +6,7 @@ use App\Models\CropImage;
 
 trait PackageTraits {
 
-    function getCropsInPackages (&$packages, $multiple = true) {
+    private function getCropsInPackages (&$packages, $multiple = true) {
         $cropsIds = [];
         foreach($packages as $package) {
             if (in_array($package->crop, $cropsIds)) {
@@ -39,13 +39,13 @@ trait PackageTraits {
     }
 
 
-    function addCropToPackage (&$packages, &$cropsHashed) {
+    private function addCropToPackage (&$packages, &$cropsHashed) {
         foreach ($packages as $key => $package) {
             $packages[$key]->crop = $cropsHashed[$package->crop];
         }
     }
 
-    function addCropInfoToPackages (&$packages) {
+    private function addCropInfoToPackages (&$packages) {
        $cropsHashed = $this->getCropsInPackages($packages);
        $this->addCropToPackage($packages, $cropsHashed);
     }
