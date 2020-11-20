@@ -14,6 +14,7 @@ use App\Traits\ResponsesTraits;
 use App\Traits\UserTraits;
 use App\Traits\PackageTraits;
 use App\Traits\ArrayTraits;
+use App\Traits\MoneyMaths;
 
 class Orders extends Controller
 {
@@ -22,6 +23,7 @@ class Orders extends Controller
     use UserTraits;
     use PackageTraits;
     use ArrayTraits;
+    use MoneyMaths;
 
     function makeOrder (Request $request) {
         if (!Auth::check()) {
@@ -97,16 +99,32 @@ class Orders extends Controller
         $this->addCropInfoToPackages($packages);
         $packagesHashed = $this->hashBy($packages, 'id');
 
-        $orderItems->map(function (&$orderItem) use ($packagesHashed) {
+        $orderItems = $orderItems->map(function (&$orderItem) use ($packagesHashed) {
             $orderItem->package = $packagesHashed[$orderItem->package_id];
+            $orderItem->principal = $orderItem->calculatePrinciple();
+            $orderItem->interest = $orderItem->calculateInterest();
+            $orderItem->totalReturn =  $orderItem->principal + $orderItem->interest;
+            return $orderItem;
         });
 
+        $totalPrincipal = 0;
+        $otalEarnings = 0;
+        $balance = 0;
+        $totalInterest = 0;
+       
+
+        foreach($orderItems as $orderItem) {
+            $totalPrincipal += $orderItem->principal;
+            $totalInterest += $orderItem->interest;
+        }
 
         return response()->json(
             [
-                "earnings" => 0,
-                "investmentsTotal" => 0,
-                "lastItem" => 0
+                "items" => $orderItems,
+                "totalPrinciple" => $totalPrincipal,
+                'totalInterest'=> $totalInterest,
+                "totalReturn" =>  $totalPrincipal + $totalPrincipal,
+                "available" => 0
             ]
         );
     }

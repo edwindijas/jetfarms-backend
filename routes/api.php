@@ -55,6 +55,7 @@ Route::get('/cart/get-items/{cartUuid}', [Carts::class, 'getItemsFromCart']);
 
 Route::post('/orders/purchase', [Orders::class, 'makeOrder']);
 Route::get('/orders/get', [Orders::class, 'get']);
+Route::get('/orders/summary', [Orders::class, 'summary']);
 
 
 Route::fallback(function () {
